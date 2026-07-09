@@ -1555,16 +1555,6 @@ a.knowledge-list-main {
     font-size: 13px;
   }
 
-  .app-header nav > a:first-child {
-    display: none;
-  }
-
-  .app-header nav > a:nth-child(4),
-  .app-header nav > a:nth-child(5),
-  .app-header nav > a:nth-child(6) {
-    display: none;
-  }
-
   main,
   .page-shell,
   .narrow-shell {

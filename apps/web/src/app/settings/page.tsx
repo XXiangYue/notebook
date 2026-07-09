@@ -1,20 +1,27 @@
 import Link from "next/link";
 
 import { AIOrganizerSettingsForm } from "@/components/ai-organizer-settings-form";
+import { CategoryManager } from "@/components/category-manager";
 import {
   KnowledgeApiError,
   getAIOrganizerSettings,
+  listCategories,
   type AIOrganizerSettings,
+  type Category,
 } from "@/lib/knowledge-api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 export default async function SettingsPage() {
   let settings: AIOrganizerSettings;
+  let categories: Category[];
   let errorMessage = `请确认 FastAPI 服务运行在 ${API_URL}，然后刷新页面。`;
 
   try {
-    settings = await getAIOrganizerSettings();
+    [settings, categories] = await Promise.all([
+      getAIOrganizerSettings(),
+      listCategories(),
+    ]);
   } catch (caught) {
     if (caught instanceof KnowledgeApiError) {
       errorMessage = `设置接口返回：${caught.message}`;
@@ -46,6 +53,17 @@ export default async function SettingsPage() {
         </div>
       </div>
       <AIOrganizerSettingsForm settings={settings} />
+
+      <section className="content-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Categories</p>
+            <h2>分类管理</h2>
+          </div>
+          <span>主分类用于稳定导航，系统分类保持少量。</span>
+        </div>
+        <CategoryManager categories={categories} />
+      </section>
     </main>
   );
 }

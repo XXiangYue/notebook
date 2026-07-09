@@ -9,10 +9,7 @@ export function AppHeader() {
       </Link>
       <nav aria-label="主导航">
         <Link href="/knowledge">知识库</Link>
-        <Link href="/knowledge/pending">待整理入库</Link>
         <Link href="/search">搜索</Link>
-        <Link href="/categories">分类管理</Link>
-        <Link href="/knowledge/deleted">最近删除</Link>
         <Link href="/settings">设置</Link>
         <Link className="button button-small" href="/knowledge/new">
           新增知识
