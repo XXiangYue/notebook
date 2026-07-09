@@ -126,7 +126,7 @@ export function KnowledgeDraftForm({
           const job = await organizeKnowledgeBlock(block.id);
           router.push(`/knowledge/${block.id}?jobId=${job.id}`);
         } catch {
-          router.push(`/knowledge/${block.id}`);
+          router.push(`/knowledge/${block.id}?organizeError=1`);
         }
       } else {
         setStatusMessage("新版本已保存，正在打开详情页…");

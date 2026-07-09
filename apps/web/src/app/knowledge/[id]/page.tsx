@@ -26,7 +26,7 @@ export default async function KnowledgeDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<{ jobId?: string }>;
+  searchParams?: Promise<{ jobId?: string; organizeError?: string }>;
 }) {
   const { id } = await params;
   const query = (await searchParams) ?? {};
@@ -89,6 +89,11 @@ export default async function KnowledgeDetailPage({
         {isIngestionReady ? (
           <section className="content-section workflow-section">
             <div className="workflow-panel">
+              {query.organizeError === "1" && block.status === "draft" ? (
+                <div className="form-error" role="alert">
+                  草稿已保存，但 AI 整理没有启动成功。可以点击下方“AI 整理”重试。
+                </div>
+              ) : null}
               {query.jobId && !isPendingConfirmation ? (
                 <OrganizeJobWatcher jobId={query.jobId} />
               ) : null}
