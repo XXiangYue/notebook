@@ -7,6 +7,7 @@ import { KnowledgeCategoryForm } from "@/components/knowledge-category-form";
 import { KnowledgeContentViewer } from "@/components/knowledge-content-viewer";
 import { KnowledgeIngestionActions } from "@/components/knowledge-ingestion-actions";
 import { KnowledgeStatus } from "@/components/knowledge-status";
+import { OrganizeJobWatcher } from "@/components/organize-job-watcher";
 import {
   getKnowledgeBlock,
   KnowledgeApiError,
@@ -25,14 +26,7 @@ export default async function KnowledgeDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<{
-    draftSaved?: string;
-    organizeStarted?: string;
-    organizeDone?: string;
-    organizeError?: string;
-    jobId?: string;
-    confirmed?: string;
-  }>;
+  searchParams?: Promise<{ jobId?: string }>;
 }) {
   const { id } = await params;
   const query = (await searchParams) ?? {};
@@ -92,36 +86,11 @@ export default async function KnowledgeDetailPage({
           </div>
         </header>
 
-        {query.confirmed === "1" && block.status === "searchable" ? (
-          <div className="form-status detail-status-message" role="status">
-            已确认入库。现在可以在知识库和搜索中使用这条知识。
-          </div>
-        ) : null}
-
         {isIngestionReady ? (
           <section className="content-section workflow-section">
-            <div
-              className="workflow-panel"
-              data-organize-job-id={query.jobId ?? ""}
-              data-organize-watch={query.jobId ? "true" : "false"}
-            >
-              {query.draftSaved === "1" && block.status === "draft" ? (
-                <div className="form-status" role="status">
-                  草稿已保存。
-                  {query.organizeError === "1"
-                    ? "但 AI 整理没有启动成功，可以点击下方按钮重试。"
-                    : "下一步可以先上传附件，也可以直接开始 AI 整理。"}
-                </div>
-              ) : null}
-              {query.organizeStarted === "1" ? (
-                <div className="form-status" role="status">
-                  草稿已保存，AI 整理任务已启动。本页会自动刷新出“确认并入库”表单。
-                </div>
-              ) : null}
-              {query.organizeDone === "1" && isPendingConfirmation ? (
-                <div className="form-status" role="status">
-                  AI 整理已完成。请检查下方结果，然后点击“确认并入库”。
-                </div>
+            <div className="workflow-panel">
+              {query.jobId && !isPendingConfirmation ? (
+                <OrganizeJobWatcher jobId={query.jobId} />
               ) : null}
               <div className="workflow-copy">
                 <p className="eyebrow">Next steps</p>

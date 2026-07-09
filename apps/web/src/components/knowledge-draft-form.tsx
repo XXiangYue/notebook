@@ -124,11 +124,9 @@ export function KnowledgeDraftForm({
         setStatusMessage("草稿已保存，正在启动 AI 整理…");
         try {
           const job = await organizeKnowledgeBlock(block.id);
-          router.push(
-            `/knowledge/${block.id}?draftSaved=1&organizeStarted=1&jobId=${job.id}`,
-          );
+          router.push(`/knowledge/${block.id}?jobId=${job.id}`);
         } catch {
-          router.push(`/knowledge/${block.id}?draftSaved=1&organizeError=1`);
+          router.push(`/knowledge/${block.id}`);
         }
       } else {
         setStatusMessage("新版本已保存，正在打开详情页…");
@@ -146,14 +144,7 @@ export function KnowledgeDraftForm({
   }
 
   return (
-    <form
-      className="knowledge-form"
-      data-block-id={blockId ?? ""}
-      data-knowledge-draft-form
-      data-knowledge-editing={isEditing ? "true" : "false"}
-      data-storage-key={storageKey}
-      onSubmit={handleSubmit}
-    >
+    <form className="knowledge-form" onSubmit={handleSubmit}>
       <div className="form-row">
         <label>
           标题
