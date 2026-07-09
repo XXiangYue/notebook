@@ -1,0 +1,34 @@
+{
+  "name": "@notebook/desktop",
+  "version": "0.1.0",
+  "description": "macOS desktop shell for Notebook",
+  "private": true,
+  "main": "src/main.js",
+  "scripts": {
+    "build:icon": "cd ../.. && uv run python apps/desktop/scripts/generate_icon.py && iconutil -c icns apps/desktop/build/icon.iconset -o apps/desktop/build/icon.icns",
+    "dev": "electron .",
+    "build": "pnpm build:icon && electron-builder --mac dir",
+    "dist": "pnpm build:icon && electron-builder --mac"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.notebook.desktop",
+    "productName": "Notebook",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns",
+      "target": [
+        "dir",
+        "dmg"
+      ]
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ]
+  }
+}

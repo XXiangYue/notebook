@@ -1,0 +1,38 @@
+[project]
+name = "notebook"
+version = "0.1.0"
+description = "Personal AI knowledge base"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.15.0,<2",
+    "anthropic>=0.75.0,<1",
+    "arq>=0.26.3,<1",
+    "asyncpg>=0.30.0,<1",
+    "fastapi>=0.115.0,<1",
+    "httpx>=0.28.0,<1",
+    "pydantic-settings>=2.9.0,<3",
+    "python-multipart>=0.0.20,<1",
+    "redis>=5.2.0,<6",
+    "sqlalchemy[asyncio]>=2.0.40,<3",
+    "uvicorn[standard]>=0.34.0,<1",
+]
+
+[dependency-groups]
+dev = [
+    "aiosqlite>=0.21.0,<1",
+    "pytest>=8.3.0,<9",
+    "pytest-asyncio>=0.26.0,<1",
+    "ruff>=0.11.0,<1",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

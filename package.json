@@ -1,0 +1,16 @@
+{
+  "name": "notebook",
+  "private": true,
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @notebook/web dev",
+    "dev:desktop": "pnpm --filter @notebook/desktop dev",
+    "build:desktop": "pnpm --filter @notebook/desktop build",
+    "build:web": "pnpm --filter @notebook/web build",
+    "lint:web": "pnpm --filter @notebook/web lint",
+    "typecheck:web": "pnpm --filter @notebook/web typecheck"
+  }
+}
