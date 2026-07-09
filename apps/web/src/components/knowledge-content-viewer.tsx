@@ -1,4 +1,6 @@
-import { Fragment, type ReactNode } from "react";
+"use client";
+
+import { Fragment, useState, type ReactNode } from "react";
 
 type KnowledgeContentViewerProps = {
   content: string;
@@ -196,39 +198,33 @@ export function KnowledgeContentViewer({
   content,
   markdownContent,
 }: KnowledgeContentViewerProps) {
+  const [showPreview, setShowPreview] = useState(false);
   const previewMarkdown = markdownContent?.trim() ?? "";
   const hasMarkdown = Boolean(previewMarkdown);
 
   return (
-    <div className="content-viewer" data-content-viewer>
+    <div className="content-viewer">
       {hasMarkdown ? (
         <div className="content-viewer-actions">
           <button
-            aria-pressed="false"
+            aria-pressed={showPreview}
             className="secondary-button button-small"
-            data-markdown-preview-toggle
+            onClick={() => setShowPreview((current) => !current)}
             type="button"
           >
-            预览 Markdown
+            {showPreview ? "查看文本" : "预览 Markdown"}
           </button>
         </div>
       ) : null}
 
-      {hasMarkdown ? (
-        <div
-          aria-label="Markdown 预览"
-          className="markdown-rendered"
-          data-markdown-preview-panel
-          hidden
-          role="region"
-        >
+      {hasMarkdown && showPreview ? (
+        <div aria-label="Markdown 预览" className="markdown-rendered" role="region">
           <div className="content-viewer-mode-label">Markdown 预览</div>
           <MarkdownPreview markdown={previewMarkdown} />
         </div>
-      ) : null}
-      <div className="raw-content" data-markdown-raw-panel>
-        {content}
-      </div>
+      ) : (
+        <div className="raw-content">{content}</div>
+      )}
     </div>
   );
 }
