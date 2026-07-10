@@ -23,6 +23,9 @@ pnpm dev:desktop
 5. 构建 Next.js 前端并用 `next start` 启动生产模式 Web 服务。
 6. 在 macOS 窗口中打开可用的本地 Web 端口，默认是 `http://127.0.0.1:3000`。
 
+关闭 Notebook 窗口或退出应用时，应用会终止本次启动的 API、worker、Next.js
+进程树，并停止对应的 Docker Compose 服务，避免后台服务继续占用端口。
+
 ## 生成 `.app`
 
 ```bash

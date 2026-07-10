@@ -14,6 +14,14 @@ const DEFAULT_API_PORT = 8000;
 const MAX_API_PORT = 8099;
 const DEFAULT_WEB_PORT = 3000;
 const MAX_WEB_PORT = 3099;
+const COMPOSE_ARGS = [
+  "compose",
+  "--env-file",
+  ".env",
+  "-f",
+  "infrastructure/compose.yml",
+];
+const SHUTDOWN_GRACE_PERIOD_MS = 5000;
 
 let mainWindow;
 let apiPort = DEFAULT_API_PORT;
@@ -21,7 +29,12 @@ let API_URL = apiUrlForPort(apiPort);
 let webPort = DEFAULT_WEB_PORT;
 let WEB_URL = webUrlForPort(webPort);
 const childProcesses = new Set();
+const runningCommands = new Set();
 const logLines = [];
+let composeStarted = false;
+let shutdownPromise;
+let quitRequested = false;
+let shutdownFinished = false;
 
 function apiUrlForPort(port) {
   return `http://${API_HOST}:${port}`;
@@ -132,14 +145,20 @@ function run(command, args, options = {}) {
     const child = spawn(command, args, {
       cwd: PROJECT_ROOT,
       env: serviceEnv(),
+      detached: true,
       shell: false,
       ...options,
     });
 
+    runningCommands.add(child);
     child.stdout?.on("data", (data) => appendLog(data.toString().trimEnd()));
     child.stderr?.on("data", (data) => appendLog(data.toString().trimEnd()));
-    child.on("error", reject);
+    child.on("error", (error) => {
+      runningCommands.delete(child);
+      reject(error);
+    });
     child.on("exit", (code) => {
+      runningCommands.delete(child);
       if (code === 0) {
         resolve();
       } else {
@@ -154,6 +173,7 @@ function startProcess(name, command, args) {
   const child = spawn(command, args, {
     cwd: PROJECT_ROOT,
     env: serviceEnv(),
+    detached: true,
     shell: false,
   });
 
@@ -161,7 +181,6 @@ function startProcess(name, command, args) {
   child.stdout.on("data", (data) => appendLog(`[${name}] ${data.toString().trimEnd()}`));
   child.stderr.on("data", (data) => appendLog(`[${name}] ${data.toString().trimEnd()}`));
   child.on("exit", (code, signal) => {
-    childProcesses.delete(child);
     appendLog(`${name} stopped${signal ? ` by ${signal}` : ` with code ${code}`}`);
   });
   child.on("error", (error) => appendLog(`${name} failed: ${error.message}`));
@@ -442,15 +461,8 @@ async function bootNotebook() {
       appendLog(`Web port ${DEFAULT_WEB_PORT} is in use; using ${webPort}`);
     }
 
-    await run("docker", [
-      "compose",
-      "--env-file",
-      ".env",
-      "-f",
-      "infrastructure/compose.yml",
-      "up",
-      "-d",
-    ]);
+    composeStarted = true;
+    await run("docker", [...COMPOSE_ARGS, "up", "-d"]);
     await run("uv", ["run", "alembic", "upgrade", "head"]);
 
     startProcess("api", "uv", [
@@ -493,11 +505,84 @@ async function bootNotebook() {
   }
 }
 
-function stopChildren() {
-  for (const child of childProcesses) {
-    child.kill("SIGTERM");
+function isProcessGroupRunning(pid) {
+  try {
+    process.kill(-pid, 0);
+    return true;
+  } catch (error) {
+    return error.code === "EPERM";
   }
+}
+
+function signalProcessGroup(child, signal) {
+  if (!child.pid) {
+    return;
+  }
+
+  try {
+    process.kill(-child.pid, signal);
+  } catch (error) {
+    if (error.code !== "ESRCH") {
+      appendLog(`Failed to send ${signal} to process group ${child.pid}: ${error.message}`);
+    }
+  }
+}
+
+async function waitForProcessGroups(children, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    if (children.every((child) => !child.pid || !isProcessGroupRunning(child.pid))) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+}
+
+async function stopChildren() {
+  const children = [...new Set([...childProcesses, ...runningCommands])];
+  if (children.length === 0) {
+    return;
+  }
+
+  appendLog("Stopping Notebook services");
+  for (const child of children) {
+    signalProcessGroup(child, "SIGTERM");
+  }
+
+  await waitForProcessGroups(children, SHUTDOWN_GRACE_PERIOD_MS);
+
+  const remainingChildren = children.filter(
+    (child) => child.pid && isProcessGroupRunning(child.pid),
+  );
+  for (const child of remainingChildren) {
+    signalProcessGroup(child, "SIGKILL");
+  }
+
+  await waitForProcessGroups(remainingChildren, 1000);
   childProcesses.clear();
+  runningCommands.clear();
+}
+
+async function shutdownNotebook() {
+  if (!shutdownPromise) {
+    shutdownPromise = (async () => {
+      await stopChildren();
+
+      if (composeStarted) {
+        appendLog("Stopping Notebook containers");
+        try {
+          await run("docker", [...COMPOSE_ARGS, "down"]);
+        } catch (error) {
+          appendLog(`Failed to stop Notebook containers: ${error.message}`);
+        } finally {
+          composeStarted = false;
+        }
+      }
+    })();
+  }
+
+  return shutdownPromise;
 }
 
 const hasLock = app.requestSingleInstanceLock();
@@ -519,8 +604,29 @@ if (!hasLock) {
     bootNotebook();
   });
 
-  app.on("before-quit", stopChildren);
+  app.on("before-quit", (event) => {
+    if (shutdownFinished) {
+      return;
+    }
+
+    event.preventDefault();
+    if (quitRequested) {
+      return;
+    }
+
+    quitRequested = true;
+    shutdownNotebook()
+      .catch((error) => appendLog(`Shutdown failed: ${error.stack || error.message}`))
+      .finally(() => {
+        shutdownFinished = true;
+        app.quit();
+      });
+  });
   app.on("window-all-closed", () => {
     app.quit();
   });
+
+  for (const signal of ["SIGINT", "SIGTERM"]) {
+    process.once(signal, () => app.quit());
+  }
 }
