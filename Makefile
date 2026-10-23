@@ -19,7 +19,7 @@ node-version:
 	@$(NODE_RUN) node --version
 
 infra-up:
-	docker compose --env-file .env -f infrastructure/compose.yml up -d
+	docker compose --env-file .env -f infrastructure/compose.yml up -d --wait
 
 infra-down:
 	docker compose --env-file .env -f infrastructure/compose.yml down

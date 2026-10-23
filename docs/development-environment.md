@@ -136,6 +136,9 @@ make infra-logs
 make infra-down
 ```
 
+`infra-up` 会等待 PostgreSQL 和 Redis 的健康检查通过后再返回，随后即可运行
+`make migrate`，避免首次启动时数据库尚未就绪造成连接失败。
+
 `infra-down` 不删除 volume。除非明确需要清空本地数据，否则不要执行带 `--volumes` 的关闭命令。
 
 ## 7. 配置和密钥
