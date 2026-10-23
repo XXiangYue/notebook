@@ -17,7 +17,7 @@ Docker Compose
 └── Redis
 ```
 
-本机应用使用虚拟环境隔离依赖，基础设施使用容器隔离服务。生产环境再把 Web、API 和 Worker 构建为容器镜像。
+本机应用使用虚拟环境隔离依赖，基础设施使用容器隔离服务。应用容器化是后续方向，当前仓库尚未提供 Web、API 和 Worker 的生产镜像。
 
 ## 2. 三种隔离方式
 
@@ -181,9 +181,13 @@ make check
 - Ruff Python 静态检查
 - Pytest
 - ESLint
-- TypeScript 类型检查
+- Next.js 路由类型生成与 TypeScript 类型检查
 
 提交依赖变更时需要同时提交 `uv.lock` 或 `pnpm-lock.yaml`。
+
+`next-env.d.ts` 和 `*.tsbuildinfo` 由 Next.js / TypeScript 生成，已加入忽略规则。
+全新克隆后运行类型检查会先执行 `next typegen`，无需预先启动开发服务器。
+个人工具配置（如 `.claude/`）与依赖缓存只保留本地，项目级约定见 [AGENTS.md](../AGENTS.md)。
 
 数据库模型发生变化时，不直接修改已经应用过的迁移，而是创建新迁移：
 
@@ -200,7 +204,7 @@ make migrate
 - 基础设施在容器中运行。
 - 开启热更新和调试日志。
 
-生产环境：
+未来生产部署建议（尚未提供完整部署方案）：
 
 - Web、API、Worker 分别构建不可变镜像。
 - 数据库优先使用托管服务或独立持久化部署。

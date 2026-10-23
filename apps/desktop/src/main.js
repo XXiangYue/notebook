@@ -6,7 +6,6 @@ const net = require("node:net");
 const os = require("node:os");
 const path = require("node:path");
 
-const DEFAULT_PROJECT_ROOT = "/Users/lsf/Documents/notebook";
 const PROJECT_ROOT = findProjectRoot();
 const NODE_VERSION = readNodeVersion();
 const API_HOST = "127.0.0.1";
@@ -70,7 +69,6 @@ function findProjectRoot() {
   }
 
   const candidates = [
-    DEFAULT_PROJECT_ROOT,
     path.resolve(__dirname, "../../.."),
     process.cwd(),
     app.getAppPath(),

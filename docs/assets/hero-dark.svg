@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="470" viewBox="0 0 1280 470" role="img" aria-labelledby="title desc">
+  <title id="title">Notebook — 让零散知识，成为有用的积累。</title>
+  <desc id="desc">Notebook 的知识处理流程：保存原始资料，AI 整理，人工确认，再通过混合检索找到它。</desc>
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#3a5745"/></pattern>
+  </defs>
+  <rect x="1" y="1" width="1278" height="468" rx="28" fill="#14271e" stroke="#2e4939" stroke-width="2"/>
+  <rect x="670" y="22" width="588" height="426" rx="20" fill="url(#grid)"/>
+  <circle cx="1000" cy="217" r="188" fill="#203e2d"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <g fill="none" stroke="#8bd7af" stroke-width="2.5" stroke-linejoin="round">
+      <rect x="65" y="54" width="29" height="34" rx="5"/>
+      <path d="M73 54v34m7-24h7m-7 7h7"/>
+    </g>
+    <text x="110" y="78" font-size="15" font-weight="600" letter-spacing="3" fill="#adc5b3">A PERSONAL KNOWLEDGE BASE</text>
+    <text x="62" y="175" font-size="80" font-weight="700" letter-spacing="-4" fill="#f0f3e7">Notebook</text>
+    <text x="66" y="243" font-size="37" font-weight="500" fill="#f0f3e7">让零散知识，</text>
+    <text x="66" y="296" font-size="37" font-weight="500" fill="#f0f3e7">成为有用的积累。</text>
+    <path d="M66 338h76" stroke="#8bd7af" stroke-width="3"/>
+    <text x="66" y="384" font-size="18" fill="#adc5b3">采集</text>
+    <text x="127" y="384" font-size="17" fill="#8bd7af">→</text>
+    <text x="166" y="384" font-size="18" fill="#adc5b3">整理</text>
+    <text x="227" y="384" font-size="17" fill="#8bd7af">→</text>
+    <text x="266" y="384" font-size="18" fill="#adc5b3">确认</text>
+    <text x="327" y="384" font-size="17" fill="#8bd7af">→</text>
+    <text x="366" y="384" font-size="18" fill="#adc5b3">检索</text>
+    <text x="66" y="426" font-size="12" letter-spacing="2" fill="#adc5b3">OPEN SOURCE  /  BUILT FOR YOUR IDEAS</text>
+    <g transform="rotate(-12 965 227)">
+      <rect x="817" y="95" width="291" height="258" rx="15" fill="#294734" stroke="#3a5745" stroke-width="2"/>
+    </g>
+    <g transform="rotate(5 976 220)">
+      <rect x="836" y="78" width="286" height="262" rx="15" fill="#213d2e" stroke="#3a5745" stroke-width="2"/>
+      <rect x="858" y="102" width="81" height="24" rx="12" fill="#2d4d39"/>
+      <text x="873" y="119" font-size="11" font-weight="600" fill="#8bd7af">YOUR NOTES</text>
+      <text x="858" y="161" font-size="23" font-weight="600" fill="#f0f3e7">知识，逐步成形。</text>
+      <path d="M860 185h225M860 207h198M860 229h213" stroke="#3a5745" stroke-width="6" stroke-linecap="round"/>
+      <rect x="858" y="257" width="112" height="32" rx="8" fill="#2d4d39"/>
+      <path d="m872 272 4 4 7-9" fill="none" stroke="#8bd7af" stroke-width="2" stroke-linecap="round"/>
+      <text x="893" y="278" font-size="13" fill="#8bd7af">由你确认</text>
+    </g>
+    <rect x="768" y="340" width="389" height="68" rx="18" fill="#213d2e" stroke="#3a5745" stroke-width="2"/>
+    <g fill="none" stroke="#8bd7af" stroke-width="2.5" stroke-linecap="round">
+      <circle cx="799" cy="370" r="9"/><path d="m806 377 7 7"/>
+    </g>
+    <text x="832" y="381" font-size="19" fill="#adc5b3">让需要的知识，再次被找到</text>
+    <circle cx="794" cy="195" r="29" fill="#8bd7af"/>
+    <path d="M794 178v34m-17-17h34m-29-12 24 24m-24 0 24-24" stroke="#14271e" stroke-width="2.3" stroke-linecap="round"/>
+  </g>
+</svg>

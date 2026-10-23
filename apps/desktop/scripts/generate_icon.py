@@ -5,7 +5,6 @@ import struct
 import zlib
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 BUILD_DIR = ROOT / "build"
 ICONSET_DIR = BUILD_DIR / "icon.iconset"
@@ -15,7 +14,9 @@ def clamp(value: float) -> int:
     return max(0, min(255, round(value)))
 
 
-def mix(a: tuple[int, int, int, int], b: tuple[int, int, int, int], t: float) -> tuple[int, int, int, int]:
+def mix(
+    a: tuple[int, int, int, int], b: tuple[int, int, int, int], t: float
+) -> tuple[int, int, int, int]:
     return tuple(clamp(a[i] * (1 - t) + b[i] * t) for i in range(4))
 
 
@@ -26,14 +27,18 @@ def smoothstep(edge0: float, edge1: float, value: float) -> float:
     return x * x * (3 - 2 * x)
 
 
-def rounded_rect_alpha(x: float, y: float, left: float, top: float, right: float, bottom: float, radius: float) -> float:
+def rounded_rect_alpha(
+    x: float, y: float, left: float, top: float, right: float, bottom: float, radius: float
+) -> float:
     cx = min(max(x, left + radius), right - radius)
     cy = min(max(y, top + radius), bottom - radius)
     distance = math.hypot(x - cx, y - cy)
     return 1.0 - smoothstep(radius - 1.4, radius + 1.4, distance)
 
 
-def line_alpha(px: float, py: float, ax: float, ay: float, bx: float, by: float, width: float) -> float:
+def line_alpha(
+    px: float, py: float, ax: float, ay: float, bx: float, by: float, width: float
+) -> float:
     vx = bx - ax
     vy = by - ay
     wx = px - ax
@@ -47,7 +52,9 @@ def line_alpha(px: float, py: float, ax: float, ay: float, bx: float, by: float,
     return 1.0 - smoothstep(width / 2 - 1.0, width / 2 + 1.0, distance)
 
 
-def composite(dst: tuple[int, int, int, int], src: tuple[int, int, int, int], alpha: float) -> tuple[int, int, int, int]:
+def composite(
+    dst: tuple[int, int, int, int], src: tuple[int, int, int, int], alpha: float
+) -> tuple[int, int, int, int]:
     src_alpha = (src[3] / 255.0) * alpha
     dst_alpha = dst[3] / 255.0
     out_alpha = src_alpha + dst_alpha * (1 - src_alpha)
@@ -61,7 +68,9 @@ def composite(dst: tuple[int, int, int, int], src: tuple[int, int, int, int], al
     return tuple(channels)
 
 
-def encode_png(path: Path, width: int, height: int, pixels: list[tuple[int, int, int, int]]) -> None:
+def encode_png(
+    path: Path, width: int, height: int, pixels: list[tuple[int, int, int, int]]
+) -> None:
     raw = bytearray()
     for y in range(height):
         raw.append(0)
@@ -120,7 +129,9 @@ def render_icon(size: int) -> list[tuple[int, int, int, int]]:
 
             spine = rounded_rect_alpha(px, py, 198, 178, 308, 800, 42)
             color = composite(color, (31, 88, 82, 255), spine)
-            color = composite(color, (112, 215, 176, 210), line_alpha(px, py, 276, 242, 276, 736, 10))
+            color = composite(
+                color, (112, 215, 176, 210), line_alpha(px, py, 276, 242, 276, 736, 10)
+            )
 
             for offset in (0, 112, 224, 336):
                 alpha = rounded_rect_alpha(px, py, 360, 306 + offset, 700, 352 + offset, 17)
@@ -128,7 +139,9 @@ def render_icon(size: int) -> list[tuple[int, int, int, int]]:
 
             nib = rounded_rect_alpha(px, py, 528, 514, 716, 650, 34)
             color = composite(color, (252, 184, 82, 255), nib)
-            color = composite(color, (190, 102, 54, 255), line_alpha(px, py, 546, 618, 696, 532, 22))
+            color = composite(
+                color, (190, 102, 54, 255), line_alpha(px, py, 546, 618, 696, 532, 22)
+            )
 
             spark = line_alpha(px, py, 698, 346, 778, 346, 12)
             spark = max(spark, line_alpha(px, py, 738, 306, 738, 386, 12))

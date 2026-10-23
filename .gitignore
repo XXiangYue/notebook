@@ -1,5 +1,13 @@
+# Local settings and credentials
 .DS_Store
 .env
+.env.*
+!.env.example
+/.claude/
+/.codex/
+/.cursor/
+
+# Python environments and caches
 .venv/
 __pycache__/
 *.py[cod]
@@ -7,12 +15,22 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
+# JavaScript dependencies and generated Next.js files
 node_modules/
+.pnpm-store/
 .next/
+next-env.d.ts
+*.tsbuildinfo
 out/
 dist/
-apps/desktop/dist/
 
+# Desktop icons are rebuilt by pnpm build:icon
+/apps/desktop/build/
+
+# Local assistant execution notes; maintained designs live in docs/design/
+/docs/superpowers/
+
+# Runtime data
 data/*
 !data/.gitkeep
 
