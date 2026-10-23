@@ -167,3 +167,12 @@ EMBEDDING_BASE_URL=https://api.minimaxi.com/v1
 
 API Key 优先读取 `EMBEDDING_API_KEY`，未设置时复用 `MINIMAX_API_KEY`。历史或旧模型产生的
 embedding 是派生数据，迁移维度或更换模型后可清空并由搜索路径自动重建。
+
+## 参与贡献
+
+欢迎提交 Issue 和 Pull Request。开发规范、目录结构与检查命令见 [贡献指南](AGENTS.md)。
+提交代码前请运行 `make check`；界面变更请附上截图和验证说明。
+
+## 开源许可
+
+本项目使用 [MIT License](LICENSE)。
