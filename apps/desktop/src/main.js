@@ -487,7 +487,7 @@ async function bootNotebook() {
       "-H",
       API_HOST,
     ]);
-    await waitForUrl(WEB_URL, 120000);
+    await waitForUrl(`${WEB_URL}/knowledge`, 120000);
 
     appendLog("Notebook is ready");
     await mainWindow.loadURL(WEB_URL);
